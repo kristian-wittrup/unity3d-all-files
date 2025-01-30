@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI; // Add this line to include the UI namespace
 using TMPro; // Import TextMeshPro namespace
+using UnityEngine.InputSystem; 
 
 public class SkillButtonHandler : MonoBehaviour
 {
     public Button[] skillButtons; // Ensure Button type is recognized
     public TMP_Text skillPointsText; // Use TMP_Text for TextMeshPro
+    public InputActionReference leftShiftInput; // This is from the /Assets/InputSystem_Actions that if you look at, defines "left shift" as the button
 
     public int totalSkillPoints = 250;
     private int currentSkillIndex = 0;
@@ -22,6 +24,15 @@ public class SkillButtonHandler : MonoBehaviour
     // Left-click: select the next skill in sequence
     public void OnSkillButtonLeftClick(int skillIndex)
     {
+        // NOTE FOR LETHOS:
+        // I'm adding a check here for if you're holding SHIFT. If so, it'll call your other function
+        if (leftShiftInput.action.IsPressed())
+        {
+            OnSkillButtonRightClick(skillIndex);
+            return;
+        }
+
+
         // Only proceed if this button is the next in sequence
         if (skillIndex != currentSkillIndex || isSelected[skillIndex]) return;
         if (totalSkillPoints < skillCosts[skillIndex]) return; // Not enough points
